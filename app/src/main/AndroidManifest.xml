@@ -20,6 +20,8 @@
         </activity>
 
         <activity android:name=".ContentViewActivity" />
+
+        <activity android:name=".RouterTargetActivity" />
     </application>
 
 </manifest>
