@@ -1,4 +1,4 @@
-package com.stormful.android.compiler;
+package com.stormful.android.compiler.viewinject;
 
 /**
  * @Description: 注入的常量类

@@ -1,10 +1,10 @@
-package com.stormful.android.compiler;
+package com.stormful.android.compiler.viewinject;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import com.stormful.android.annotation.InjectView;
-import com.stormful.android.compiler.entity.InjectViewEntity;
+import com.stormful.android.compiler.viewinject.entity.InjectViewEntity;
 
 import java.io.Writer;
 import java.util.HashSet;
@@ -94,10 +94,15 @@ public class CompilerProcessor extends AbstractProcessor {
         generateEmptyClass();
         //处理InjectView注解
         handlerInjectView(env);
-
         return true;
     }
 
+
+    /**
+     * 处理InjectView注解
+     *
+     * @param env RoundEnvironment
+     */
     private void handlerInjectView(RoundEnvironment env) {
 
         //获取带有InjectView注解的数据
@@ -126,39 +131,41 @@ public class CompilerProcessor extends AbstractProcessor {
 
         }
 
+
+        //通过注解类的数据生成java文件
         Set<Map.Entry<TypeElement, Set<InjectViewEntity>>> InjectViewEntityEntries = injectionsSetByClass.entrySet();
 
-        for(Map.Entry<TypeElement, Set<InjectViewEntity>> injectEntrySet:InjectViewEntityEntries){
+        for (Map.Entry<TypeElement, Set<InjectViewEntity>> injectEntrySet : InjectViewEntityEntries) {
             TypeElement enclosingElement = injectEntrySet.getKey();
             //KEY--enclosingElement===>com.stormful.android.annotationinject.MainActivity
-            printLog("KEY--enclosingElement===>%s",enclosingElement);
+            printLog("KEY--enclosingElement===>%s", enclosingElement);
             String targetClassFullName = enclosingElement.getQualifiedName().toString();
             //com.stormful.android.annotationinject.MainActivity
-            printLog("VALUE--getQualifiedName===>%s",targetClassFullName);
+            printLog("VALUE--getQualifiedName===>%s", targetClassFullName);
             int lastDotIndex = targetClassFullName.lastIndexOf(".");
-            String activityType = targetClassFullName.substring( lastDotIndex+ 1);
+            String activityType = targetClassFullName.substring(lastDotIndex + 1);
             //VALUE--activityType===>MainActivity
-            printLog("VALUE--activityType===>%s",activityType);
+            printLog("VALUE--activityType===>%s", activityType);
             String className = activityType + InjectConstant.SUFFIX;
-            printLog("VALUE--生成的类名===>%s",className);
+            printLog("VALUE--生成的类名===>%s", className);
             String packageName = targetClassFullName.substring(0, lastDotIndex);
 
 
             Set<InjectViewEntity> values = injectEntrySet.getValue();
             StringBuilder injectVies = new StringBuilder();
-            for(InjectViewEntity viewEntity:values){
+            for (InjectViewEntity viewEntity : values) {
                 //activity.tvTest = (android.widget.TextView) activity.findViewById(2131165300);
-                printLog("VALUE--viewEntity===>%s",viewEntity);
+                printLog("VALUE--viewEntity===>%s", viewEntity);
                 injectVies.append(viewEntity).append("\n");
             }
 
             try {
                 JavaFileObject classFile = mFiler.createSourceFile(packageName + "." + className, enclosingElement);
                 Writer writer = classFile.openWriter();
-                writer.write(String.format(InjectConstant.INJECTOR,packageName,className,activityType,injectVies.toString()));
+                writer.write(String.format(InjectConstant.INJECTOR, packageName, className, activityType, injectVies.toString()));
                 writer.flush();
                 writer.close();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

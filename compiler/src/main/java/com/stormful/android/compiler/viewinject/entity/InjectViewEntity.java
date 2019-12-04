@@ -1,4 +1,4 @@
-package com.stormful.android.compiler.entity;
+package com.stormful.android.compiler.viewinject.entity;
 
 /**
  * @Description: 注解的数据实例
