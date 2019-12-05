@@ -1,6 +1,7 @@
 package com.stormful.android.api.viewInject;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,6 +18,7 @@ public class AnnotationInject {
         try {
             //通过反射获取到生成的java类文件
             Class<?> actClass = Class.forName(activity.getClass().getName() + "$$ViewInjector");
+            Log.i("dzh","annotationInject===>"+activity.getClass().getName());
             //获取生成的类的inject方法
             Method inject = actClass.getMethod("inject", activity.getClass());
             //在传入的Activity中调用inject方法，达到tvTest有值的目的

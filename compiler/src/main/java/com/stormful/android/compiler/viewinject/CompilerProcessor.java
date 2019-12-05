@@ -19,6 +19,7 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -55,7 +56,7 @@ public class CompilerProcessor extends AbstractProcessor {
         mElementUtils = processingEnv.getElementUtils();
         mMessager = processingEnv.getMessager();
         mFiler = processingEnv.getFiler();
-        printLog("AbstractProcessor:" + "mInit");
+        printLog("CompilerProcessor:" + "mInit");
     }
 
     /**
@@ -83,15 +84,21 @@ public class CompilerProcessor extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         //return super.getSupportedAnnotationTypes();
         Set<String> types = new LinkedHashSet<>();
-        types.add(Override.class.getCanonicalName());
+        types.add(InjectView.class.getCanonicalName());
         return types;
     }
 
     @Override
+    public SourceVersion getSupportedSourceVersion() {
+        //获取支持的版本号
+        return super.getSupportedSourceVersion();
+    }
+
+    @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment env) {
-        printLog("AbstractProcessor:" + "process");
+        printLog("CompilerProcessor:" + "process");
         //测试生成一个空java类
-        generateEmptyClass();
+//        generateEmptyClass();
         //处理InjectView注解
         handlerInjectView(env);
         return true;
@@ -165,7 +172,7 @@ public class CompilerProcessor extends AbstractProcessor {
                 writer.write(String.format(InjectConstant.INJECTOR, packageName, className, activityType, injectVies.toString()));
                 writer.flush();
                 writer.close();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
 
