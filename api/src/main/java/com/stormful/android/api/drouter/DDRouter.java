@@ -64,8 +64,14 @@ public class DDRouter {
 
     private static void startActivity(String actStr) {
 
-        if (mContext == null) return;
-        Intent intent = new Intent(actStr);
+        Class<?> targetActivityClass = null;
+        try {
+            targetActivityClass = Class.forName(actStr);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (mContext == null || targetActivityClass == null) return;
+        Intent intent = new Intent(mContext, targetActivityClass);
         mContext.startActivity(intent);
     }
 }

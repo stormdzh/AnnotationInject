@@ -42,11 +42,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "onClick 被点击了", Toast.LENGTH_SHORT).show();
 //        startActivity(new Intent(this,ContentViewActivity.class));
 
-//        DDRouter.navigation("/router/target");
-
-        Intent intent=new Intent();
-        intent.setAction("com.stormful.android.annotationinject.RouterTargetActivity");
-        startActivity(intent);
+        //使用路由协议跳转
+        DDRouter.navigation("/router/target");
 
     }
 }
